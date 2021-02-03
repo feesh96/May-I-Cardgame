@@ -1,4 +1,5 @@
 import io from 'socket.io-client';
+import Hand from '../helpers/hand';
 import Player from '../helpers/player';
 
 export default class Game extends Phaser.Scene {
@@ -34,6 +35,7 @@ export default class Game extends Phaser.Scene {
         this.load.image('backRed', 'src/assets/cards/red_back.png');
         this.load.image('backPurple', 'src/assets/cards/purple_back.png');
 
+        this.load.image('blankCard', 'src/assets/cards/card_empty.png');
         this.load.image('table', 'src/assets/poker_table.jpg');
     }
 
@@ -41,7 +43,8 @@ export default class Game extends Phaser.Scene {
         this.add.image(830, 450, 'table').setScale(3.7, 3.7);
         // When someone clicks on the deck, they get the card
         // Make sure only the p
-        this.deck = this.add.image(830,500, 'backRed').setScale(0.2, 0.2).setInteractive();
+        this.deck = this.add.image(750,250, 'backRed').setScale(0.15, 0.15).setInteractive();
+        this.discardPile = this.add.image(950,250, 'blankCard').setScale(2.5, 2.5);
         let self = this;
 
         this.player = new Player();
@@ -124,8 +127,13 @@ export default class Game extends Phaser.Scene {
             if (playerNumber === self.player.number) {
                 console.log(playerNumber);
                 console.log(cards);
+                self.player.hand = new Hand(cards, self);
             }
         })
+
+        this.socket.on('discard', function (card) {
+            self.discardPile.setTexture(card).setScale(0.15, 0.15);
+        });
 
         this.socket.on('roundOver', function (newTurn) {
             turn = newTurn();
@@ -147,5 +155,9 @@ export default class Game extends Phaser.Scene {
     
     update() {
     
+    }
+
+    dealCards(cards) {
+
     }
 }

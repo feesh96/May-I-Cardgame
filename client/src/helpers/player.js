@@ -3,7 +3,7 @@ import Hand from "./hand";
 // Keep track of "order", "hand", "cardsDown", "isTurn", "playerNumber"
 export default class Player {
     constructor() {
-        this.hand = new Hand();
+        this.hand = [];
         this.cardsDown = [];
         this.isTurn = false;
         this.number = -1;
